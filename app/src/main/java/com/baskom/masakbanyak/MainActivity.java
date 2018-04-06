@@ -18,7 +18,6 @@ public class MainActivity extends AppCompatActivity
         TransactionFragment.OnFragmentInteractionListener {
 
     private Toolbar toolbar;
-    SearchView searchView;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -31,7 +30,6 @@ public class MainActivity extends AppCompatActivity
                     transaction.replace(R.id.content, new HomeFragment()).commit();
                     return true;
                 case R.id.navigation_search:
-                    searchView.requestFocus();
                     transaction.replace(R.id.content, new SearchFragment()).commit();
                     return true;
                 case R.id.navigation_transaksi:
@@ -59,9 +57,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_profile, menu);
-
         return super.onCreateOptionsMenu(menu);
     }
 
