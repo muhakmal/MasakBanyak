@@ -33,6 +33,12 @@ dependencies {
     implementation 'com.android.support:design:27.1.0'
     //searchview
     implementation 'com.github.rudsonlive:searchliveo:1.1.2'
-
+    //animasi
+    implementation 'com.bartoszlipinski.constraint:staggeredanimationgroup:1.0.0'
+    // obviously, you will also need those two:
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta1'
+    implementation 'com.android.support:transition:26.1.0'
+    //nliveo
+    implementation 'br.com.liveo:navigationdrawer-material:2.5.1'
 
 }

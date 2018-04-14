@@ -4,11 +4,10 @@
         android:width="3dp"
         android:color="@color/white" />
 
-    <corners android:radius="10dp"/>
+    <corners android:radius="2dp"/>
 
-    <gradient
-        android:startColor="@color/white"
-        android:endColor="@color/white"
-        android:type="linear" />
+    <solid
+        android:color="@color/nliveo_gray"
+        />
 
 </shape>
