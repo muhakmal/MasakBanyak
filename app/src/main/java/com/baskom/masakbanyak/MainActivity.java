@@ -15,7 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.widget.SearchView;
+import android.support.v7.widget.SearchView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,10 +36,12 @@ public class MainActivity extends AppCompatActivity
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    transaction.replace(R.id.content, HomeFragment.newInstance(getCateringList())).commit();
+                    transaction.replace(R.id.content, HomeFragment.newInstance(getCateringList()))
+                            .commit();
                     return true;
                 case R.id.navigation_transaksi:
-                    transaction.replace(R.id.content, TransactionFragment.newInstance("01","02")).commit();
+                    transaction.replace(R.id.content, TransactionFragment.newInstance("01","02"))
+                            .commit();
                     return true;
             }
             return false;
@@ -64,21 +66,27 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem searchBar = menu.findItem( R.id.action_search);
+        MenuItem searchItem = menu.findItem( R.id.action_search);
         MenuItem notificationItem = menu.findItem(R.id.action_notification);
-        searchBar.setIcon(R.drawable.ic_search_white_24dp);
-        return super.onCreateOptionsMenu(menu);
 
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-            case R.id.action_search:
-                TransitionManager.beginDelayedTransition((ViewGroup) getParent().findViewById(R.id.toolbar));
-                item.expandActionView();
-                return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -92,7 +100,8 @@ public class MainActivity extends AppCompatActivity
         ArrayList<Catering> cateringList = new ArrayList<>();
 
         for(int i = 0; i < 9; i++){
-            cateringList.add(new Catering("Catering0"+(i+1),"AddressofCatering0"+(i+1),
+            cateringList.add(new Catering("Catering0"+(i+1),
+                    "AddressofCatering0"+(i+1),
                     random.nextInt(5)));
         }
 
