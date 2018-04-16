@@ -1,47 +1,52 @@
 package com.baskom.masakbanyak;
 
 import android.net.Uri;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.transition.TransitionManager;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.support.v7.widget.SearchView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity
-        implements HomeFragment.OnFragmentInteractionListener,
-        TransactionFragment.OnFragmentInteractionListener {
+        implements HomeFragment.HomeFragmentInteractionListener,
+        TransactionFragment.TransactionFragmentInteractionListener {
 
     private Toolbar mToolbar;
-
+    private BottomNavigationView mBottomNavigation;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            Fragment fragment = manager.findFragmentById(R.id.content);
+
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    transaction.replace(R.id.content, HomeFragment.newInstance(getCateringList()))
-                            .commit();
+                    if(fragment instanceof TransactionFragment){
+                        transaction.replace(R.id.content, HomeFragment.newInstance(getCateringList()));
+                        transaction.addToBackStack(null);
+                        transaction.commit();
+                    }
                     return true;
                 case R.id.navigation_transaksi:
-                    transaction.replace(R.id.content, TransactionFragment.newInstance("01","02"))
-                            .commit();
+                    if(fragment instanceof HomeFragment) {
+                        transaction.replace(R.id.content, TransactionFragment.newInstance("01", "02"));
+                        transaction.addToBackStack(null);
+                        transaction.commit();
+                    }
                     return true;
             }
             return false;
@@ -52,22 +57,38 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        mBottomNavigation = (BottomNavigationView) findViewById(R.id.navigation);
+        mBottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content, HomeFragment.newInstance(getCateringList())).commit();
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.replace(R.id.content, HomeFragment.newInstance(getCateringList()));
+        transaction.commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        Fragment fragment = manager.findFragmentById(R.id.content);
+
+        if(fragment instanceof HomeFragment){
+            mBottomNavigation.setSelectedItemId(R.id.navigation_home);
+        }else{
+            mBottomNavigation.setSelectedItemId(R.id.navigation_transaksi);
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem searchItem = menu.findItem( R.id.action_search);
-        MenuItem notificationItem = menu.findItem(R.id.action_notification);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
 
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -91,7 +112,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onHomeFragmentInteraction(String parameter) {
+        Toast.makeText(this, parameter, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onTransactionFragmentInteraction(Uri uri) {
 
     }
 
@@ -107,4 +133,5 @@ public class MainActivity extends AppCompatActivity
 
         return cateringList;
     }
+
 }
