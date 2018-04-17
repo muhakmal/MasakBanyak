@@ -55,6 +55,8 @@
         android:background="?android:attr/windowBackground"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        android:forceHasOverlappingRendering="true"
+        android:fitsSystemWindows="true"
         app:menu="@menu/menu_navigation" />
 
 </RelativeLayout>

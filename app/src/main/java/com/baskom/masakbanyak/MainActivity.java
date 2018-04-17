@@ -20,7 +20,6 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity
         implements HomeFragment.HomeFragmentInteractionListener,
         TransactionFragment.TransactionFragmentInteractionListener {
-
     private Toolbar mToolbar;
     private BottomNavigationView mBottomNavigation;
 
@@ -35,14 +34,29 @@ public class MainActivity extends AppCompatActivity
 
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    if(fragment instanceof TransactionFragment){
+                    if (fragment instanceof TransactionFragment) {
                         transaction.replace(R.id.content, HomeFragment.newInstance(getCateringList()));
                         transaction.addToBackStack(null);
                         transaction.commit();
                     }
                     return true;
                 case R.id.navigation_transaksi:
-                    if(fragment instanceof HomeFragment) {
+                    if (fragment instanceof HomeFragment) {
+                        transaction.replace(R.id.content, TransactionFragment.newInstance("01", "02"));
+                        transaction.addToBackStack(null);
+                        transaction.commit();
+                    }
+                    return true;
+
+                case R.id.navigation_notifikasi:
+                    if (fragment instanceof NotifikasiFragment) {
+                        transaction.replace(R.id.content, TransactionFragment.newInstance("01", "02"));
+                        transaction.addToBackStack(null);
+                        transaction.commit();
+                    }
+                    return true;
+                case R.id.navigation_akun:
+                    if (fragment instanceof AkunFragment) {
                         transaction.replace(R.id.content, TransactionFragment.newInstance("01", "02"));
                         transaction.addToBackStack(null);
                         transaction.commit();
@@ -57,8 +71,12 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         mBottomNavigation = (BottomNavigationView) findViewById(R.id.navigation);
         mBottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        //instance yang gw panggil buat hack BottomNavigationView-nya
+        BottomNavigationHelper.removeShiftMode(mBottomNavigation);
 
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -78,9 +96,9 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction transaction = manager.beginTransaction();
         Fragment fragment = manager.findFragmentById(R.id.content);
 
-        if(fragment instanceof HomeFragment){
+        if (fragment instanceof HomeFragment) {
             mBottomNavigation.setSelectedItemId(R.id.navigation_home);
-        }else{
+        } else {
             mBottomNavigation.setSelectedItemId(R.id.navigation_transaksi);
         }
     }
@@ -125,13 +143,12 @@ public class MainActivity extends AppCompatActivity
         Random random = new Random();
         ArrayList<Catering> cateringList = new ArrayList<>();
 
-        for(int i = 0; i < 9; i++){
-            cateringList.add(new Catering("Catering0"+(i+1),
-                    "AddressofCatering0"+(i+1),
+        for (int i = 0; i < 9; i++) {
+            cateringList.add(new Catering("Catering0" + (i + 1),
+                    "AddressofCatering0" + (i + 1),
                     random.nextInt(5)));
         }
 
         return cateringList;
     }
-
 }

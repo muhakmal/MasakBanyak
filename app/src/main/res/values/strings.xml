@@ -10,12 +10,12 @@
     <string name="hello_home_fragment">Hello home fragment</string>
     <string name="hello_search_fragment">Hello search fragment</string>
     <string name="hello_transaction_fragment">Hello transaction fragment</string>
-    
+
     <!-- Some placeholders -->
     <string name="image_placeholder">Catering Image</string>
     <string name="catering_name_placeholder">Catering Name</string>
     <string name="catering_email_placeholder">Catering Email</string>
     <string name="catering_address_placeholder">Catering Address</string>
     <string name="catering_phone_placeholder">Catering Phone Number</string>
-    
+
 </resources>
