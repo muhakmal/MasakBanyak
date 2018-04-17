@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Lil G on 4/6/2018.
@@ -16,18 +15,20 @@ import java.util.List;
 
 public class CateringListAdapter extends RecyclerView.Adapter<CateringListAdapter.CateringListViewHolder> {
 
-    private ArrayList<Catering> cateringList = new ArrayList<>();
+    private ArrayList<Catering> mCateringList = new ArrayList<>();
+    private HomeFragment.HomeFragmentInteractionListener mListener;
 
-    public CateringListAdapter(ArrayList<Catering> cateringList) {
-        this.cateringList = cateringList;
+    public CateringListAdapter(ArrayList<Catering> mCateringList, HomeFragment.HomeFragmentInteractionListener mListener) {
+        this.mCateringList = mCateringList;
+        this.mListener = mListener;
     }
 
     public ArrayList<Catering> getCateringList() {
-        return cateringList;
+        return mCateringList;
     }
 
-    public void setCateringList(ArrayList<Catering> cateringList) {
-        this.cateringList = cateringList;
+    public void setCateringList(ArrayList<Catering> mCateringList) {
+        this.mCateringList = mCateringList;
     }
 
     public class CateringListViewHolder extends RecyclerView.ViewHolder{
@@ -48,17 +49,26 @@ public class CateringListAdapter extends RecyclerView.Adapter<CateringListAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CateringListViewHolder holder, int position) {
-        holder.mTextView.setText(cateringList.get(position).getName());
+    public void onBindViewHolder(@NonNull final CateringListViewHolder holder, final int position) {
+        holder.mTextView.setText(mCateringList.get(position).getName());
+        holder.mTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onHomeFragmentInteraction(mCateringList.get(position).getName());
+                }
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return cateringList.size();
+        return mCateringList.size();
     }
 
     @Override
     public int getItemViewType(int position) {
         return R.layout.itemview_catering;
     }
+
 }
