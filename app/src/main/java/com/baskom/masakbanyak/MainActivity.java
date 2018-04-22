@@ -19,7 +19,11 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity
         implements HomeFragment.HomeFragmentInteractionListener,
-        TransactionFragment.TransactionFragmentInteractionListener {
+        TransactionFragment.TransactionFragmentInteractionListener,
+        CateringFragment.CateringFragmentInteractionListener,
+        NotificationFragment.NotificationFragmentInteractionListener,
+        ProfileFragment.ProfileFragmentInteractionListener{
+
     private Toolbar mToolbar;
     private BottomNavigationView mBottomNavigation;
 
@@ -34,30 +38,30 @@ public class MainActivity extends AppCompatActivity
 
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    if (fragment instanceof TransactionFragment) {
+                    if (!(fragment instanceof HomeFragment)) {
                         transaction.replace(R.id.content, HomeFragment.newInstance(getCateringList()));
                         transaction.addToBackStack(null);
                         transaction.commit();
                     }
                     return true;
-                case R.id.navigation_transaksi:
-                    if (fragment instanceof HomeFragment) {
+                case R.id.navigation_transaction:
+                    if (!(fragment instanceof TransactionFragment)) {
                         transaction.replace(R.id.content, TransactionFragment.newInstance("01", "02"));
                         transaction.addToBackStack(null);
                         transaction.commit();
                     }
                     return true;
 
-                case R.id.navigation_notifikasi:
-                    if (fragment instanceof NotifikasiFragment) {
-                        transaction.replace(R.id.content, TransactionFragment.newInstance("01", "02"));
+                case R.id.navigation_notification:
+                    if (!(fragment instanceof NotificationFragment)) {
+                        transaction.replace(R.id.content, NotificationFragment.newInstance("01", "02"));
                         transaction.addToBackStack(null);
                         transaction.commit();
                     }
                     return true;
-                case R.id.navigation_akun:
-                    if (fragment instanceof AkunFragment) {
-                        transaction.replace(R.id.content, TransactionFragment.newInstance("01", "02"));
+                case R.id.navigation_profile:
+                    if (!(fragment instanceof ProfileFragment)) {
+                        transaction.replace(R.id.content, ProfileFragment.newInstance("01", "02"));
                         transaction.addToBackStack(null);
                         transaction.commit();
                     }
@@ -72,7 +76,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mBottomNavigation = (BottomNavigationView) findViewById(R.id.navigation);
+        mBottomNavigation = findViewById(R.id.navigation);
         mBottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         //instance yang gw panggil buat hack BottomNavigationView-nya
@@ -93,14 +97,18 @@ public class MainActivity extends AppCompatActivity
         super.onBackPressed();
 
         FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
         Fragment fragment = manager.findFragmentById(R.id.content);
 
         if (fragment instanceof HomeFragment) {
             mBottomNavigation.setSelectedItemId(R.id.navigation_home);
-        } else {
-            mBottomNavigation.setSelectedItemId(R.id.navigation_transaksi);
+        } else if(fragment instanceof TransactionFragment) {
+            mBottomNavigation.setSelectedItemId(R.id.navigation_transaction);
+        } else if(fragment instanceof NotificationFragment){
+            mBottomNavigation.setSelectedItemId(R.id.navigation_notification);
+        } else if(fragment instanceof ProfileFragment){
+            mBottomNavigation.setSelectedItemId(R.id.navigation_profile);
         }
+        
     }
 
     @Override
@@ -130,12 +138,31 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onHomeFragmentInteraction(String parameter) {
-        Toast.makeText(this, parameter, Toast.LENGTH_SHORT).show();
+    public void onHomeFragmentInteraction(Catering catering) {
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.replace(R.id.content, CateringFragment.newInstance(catering));
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     @Override
     public void onTransactionFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onCateringFragmentInteraction(Packet packet) {
+        Toast.makeText(this, packet.getName(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onNotificationFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onProfileFragmentInteraction(Uri uri) {
 
     }
 
@@ -144,11 +171,18 @@ public class MainActivity extends AppCompatActivity
         ArrayList<Catering> cateringList = new ArrayList<>();
 
         for (int i = 0; i < 9; i++) {
+            ArrayList<Packet> packetList = new ArrayList<>();
+
+            for(int x = 0; x < 7; x++){
+                packetList.add(new Packet("Packet0"+(x+1), x*10000));
+            }
+
             cateringList.add(new Catering("Catering0" + (i + 1),
                     "AddressofCatering0" + (i + 1),
-                    random.nextInt(5)));
+                    random.nextInt(5), packetList));
         }
 
         return cateringList;
     }
+
 }
