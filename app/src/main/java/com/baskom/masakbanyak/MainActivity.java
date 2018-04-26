@@ -1,5 +1,7 @@
 package com.baskom.masakbanyak;
 
+import android.app.Dialog;
+import android.support.v4.app.DialogFragment;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,18 +16,25 @@ import android.view.MenuItem;
 import android.support.v7.widget.SearchView;
 import android.widget.Toast;
 
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity
         implements HomeFragment.HomeFragmentInteractionListener,
         TransactionFragment.TransactionFragmentInteractionListener,
         CateringFragment.CateringFragmentInteractionListener,
         NotificationFragment.NotificationFragmentInteractionListener,
-        ProfileFragment.ProfileFragmentInteractionListener{
+        ProfileFragment.ProfileFragmentInteractionListener,
+        PacketFragment.PacketFragmentInteractionListener {
 
     private Toolbar mToolbar;
     private BottomNavigationView mBottomNavigation;
+    private SearchView mSearchView;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -94,21 +103,23 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if(!mSearchView.isIconified()) {
+            mSearchView.onActionViewCollapsed();
+        }else {
+            super.onBackPressed();
 
-        FragmentManager manager = getSupportFragmentManager();
-        Fragment fragment = manager.findFragmentById(R.id.content);
-
-        if (fragment instanceof HomeFragment) {
-            mBottomNavigation.setSelectedItemId(R.id.navigation_home);
-        } else if(fragment instanceof TransactionFragment) {
-            mBottomNavigation.setSelectedItemId(R.id.navigation_transaction);
-        } else if(fragment instanceof NotificationFragment){
-            mBottomNavigation.setSelectedItemId(R.id.navigation_notification);
-        } else if(fragment instanceof ProfileFragment){
-            mBottomNavigation.setSelectedItemId(R.id.navigation_profile);
+            FragmentManager manager = getSupportFragmentManager();
+            Fragment fragment = manager.findFragmentById(R.id.content);
+            if (fragment instanceof HomeFragment) {
+                mBottomNavigation.setSelectedItemId(R.id.navigation_home);
+            } else if (fragment instanceof TransactionFragment) {
+                mBottomNavigation.setSelectedItemId(R.id.navigation_transaction);
+            } else if (fragment instanceof NotificationFragment) {
+                mBottomNavigation.setSelectedItemId(R.id.navigation_notification);
+            } else if (fragment instanceof ProfileFragment) {
+                mBottomNavigation.setSelectedItemId(R.id.navigation_profile);
+            }
         }
-        
     }
 
     @Override
@@ -116,11 +127,19 @@ public class MainActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.menu_main, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
 
-        SearchView searchView = (SearchView) searchItem.getActionView();
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mSearchView = (SearchView) searchItem.getActionView();
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                return false;
+                FragmentManager manager = getSupportFragmentManager();
+                FragmentTransaction transaction = manager.beginTransaction();
+                ArrayList<Catering> filteredCateringList = new ArrayList<>(Collections2
+                        .filter(getCateringList(), new CateringFilter(query)));
+                transaction.replace(R.id.content, HomeFragment.newInstance(filteredCateringList));
+                transaction.addToBackStack(null);
+                transaction.commit();
+
+                return true;
             }
 
             @Override
@@ -147,13 +166,26 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onTransactionFragmentInteraction(Uri uri) {
+    public void onCateringFragmentInteraction(Packet packet) {
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        Fragment previousFragment = manager.findFragmentByTag("Packet");
+        if(previousFragment != null){
+            transaction.remove(previousFragment);
+        }
+        transaction.addToBackStack(null);
+        PacketFragment fragment = PacketFragment.newInstance(packet);
+        fragment.show(transaction, "Packet");
+    }
+
+    @Override
+    public void onPacketFragmentInteraction(Packet packet) {
 
     }
 
     @Override
-    public void onCateringFragmentInteraction(Packet packet) {
-        Toast.makeText(this, packet.getName(), Toast.LENGTH_SHORT).show();
+    public void onTransactionFragmentInteraction(Uri uri) {
+
     }
 
     @Override

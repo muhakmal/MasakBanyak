@@ -19,5 +19,7 @@
     <string name="catering_email_placeholder">Catering Email</string>
     <string name="catering_address_placeholder">Catering Address</string>
     <string name="catering_phone_placeholder">Catering Phone Number</string>
-
+    <string name="packet_name_placeholder">Packet name</string>
+    <string name="packet_price_placeholder">Packet price</string>
+    <string name="order_button_placeholder">Pesan</string>
 </resources>

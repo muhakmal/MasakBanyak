@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 
 /**
@@ -26,6 +27,7 @@ public class CateringFragment extends Fragment {
 
     private CateringFragmentInteractionListener mListener;
 
+    private TextView mTextViewCateringName;
     private RecyclerView mRecyclerView;
     private PacketListAdapter mPacketListAdapter;
 
@@ -55,6 +57,8 @@ public class CateringFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_catering, container, false);
 
+        mTextViewCateringName = view.findViewById(R.id.catering_name);
+        mTextViewCateringName.setText(mCatering.getName());
         mRecyclerView = view.findViewById(R.id.packet_list);
         mPacketListAdapter = new PacketListAdapter(mCatering.getPacketList(), mListener);
         mRecyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 3));
