@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -22,23 +23,24 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
-    private static final String ARG_PARAM1 = "param1";
 
-    private ArrayList<Catering> mParam1 = new ArrayList<>();
+    private static final String ARG_PARAM = "Catering List";
+
+    private ArrayList<Catering> mCateringList = new ArrayList<>();
 
     private HomeFragmentInteractionListener mListener;
 
-    RecyclerView mRecyclerView;
-    CateringListAdapter mCateringListAdapter;
+    private RecyclerView mRecyclerView;
+    private CateringListAdapter mCateringListAdapter;
 
     public HomeFragment() {
 
     }
 
-    public static HomeFragment newInstance(ArrayList<Catering> param1) {
+    public static HomeFragment newInstance(ArrayList<Catering> cateringList) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_PARAM1, param1);
+        args.putSerializable(ARG_PARAM, cateringList);
         fragment.setArguments(args);
         return fragment;
     }
@@ -47,7 +49,7 @@ public class HomeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = (ArrayList<Catering>) getArguments().getSerializable(ARG_PARAM1);
+            mCateringList = (ArrayList<Catering>) getArguments().getSerializable(ARG_PARAM);
         }
     }
 
@@ -58,7 +60,7 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         mRecyclerView = view.findViewById(R.id.catering_list);
-        mCateringListAdapter = new CateringListAdapter(mParam1, mListener);
+        mCateringListAdapter = new CateringListAdapter(mCateringList, mListener);
         mRecyclerView.setLayoutManager(new GridLayoutManager(view.getContext(),2,
                 Configuration.ORIENTATION_PORTRAIT, false));
         mRecyclerView.setAdapter(mCateringListAdapter);
@@ -83,18 +85,7 @@ public class HomeFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface HomeFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onHomeFragmentInteraction(String parameter);
+        void onHomeFragmentInteraction(Catering catering);
     }
 }

@@ -55,7 +55,7 @@ public class CateringListAdapter extends RecyclerView.Adapter<CateringListAdapte
             @Override
             public void onClick(View v) {
                 if (mListener != null) {
-                    mListener.onHomeFragmentInteraction(mCateringList.get(position).getName());
+                    mListener.onHomeFragmentInteraction(mCateringList.get(position));
                 }
             }
         });

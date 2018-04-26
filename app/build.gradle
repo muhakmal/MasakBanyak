@@ -40,5 +40,7 @@ dependencies {
     implementation 'com.android.support:transition:26.1.0'
     //nliveo
     implementation 'br.com.liveo:navigationdrawer-material:2.5.1'
+    //guava
+    implementation 'com.google.guava:guava:24.1-android'
 
 }

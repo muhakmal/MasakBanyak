@@ -19,7 +19,7 @@ public class PreLoginRegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pre_login_daftar);
+        setContentView(R.layout.activity_pre_login_register);
         gLoginForm = findViewById(R.id.groupLoginForm);
         gLoginDaftarBtn = findViewById(R.id.groupLoginRegisterBtn);
         mBtnPreLogin = findViewById(R.id.btn_pre_login);
